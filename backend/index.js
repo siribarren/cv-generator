@@ -1,4 +1,3 @@
-
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
@@ -13,9 +12,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(cors());
 app.use(express.json());
-const upload = multer({ dest: 'backend/uploads/' });
 
-// Servir el frontend
+// 🔹 1. Asegurar carpeta temporal de Cloud Run
+if (!fs.existsSync('/tmp')) {
+  fs.mkdirSync('/tmp', { recursive: true });
+}
+
+// 🔹 2. Usar /tmp para todos los archivos temporales
+const uploadDir = '/tmp';
+const upload = multer({ dest: uploadDir });
+
+// 🔹 3. Servir el frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint de análisis
@@ -52,8 +59,12 @@ app.post('/approve', async (req, res) => {
     const pdfs = [];
     for (const candidato of candidatos) {
       const html = fillTemplate(candidato);
-      const htmlPath = path.join(__dirname, 'uploads', `${candidato.nombre}_cv.html`);
+
+      // Guardar HTML temporalmente en /tmp
+      const htmlPath = path.join(uploadDir, `${candidato.nombre}_cv.html`);
       fs.writeFileSync(htmlPath, html, 'utf-8');
+
+      // Generar PDF
       const pdfPath = await generatePDF(htmlPath);
       pdfs.push({ nombre: candidato.nombre, pdfPath });
     }
