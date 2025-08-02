@@ -1,18 +1,46 @@
-// Genera el HTML final basado en cv_sermaluc.html
 import fs from "fs";
 
 export function fillTemplate(data) {
   let template = fs.readFileSync("cv_sermaluc.html", "utf-8");
 
+  // Reemplazos dinámicos
   return template
-    .replace(/{{NOMBRE}}/g, data.nombre || "")
-    .replace(/{{ROL}}/g, data.rol || "")
-    .replace(/{{CODIGO_INTERNO}}/g, data.codigo_interno || "")
-    .replace(/{{CODIGO_CLIENTE}}/g, data.codigo_cliente || "")
-    .replace(/{{RESUMEN}}/g, (data.resumen || []).map(p => `<p>${p}</p>`).join(""))
-    .replace(/{{HABILIDADES}}/g, (data.habilidades || []).map(h => `<tr><td>${h.habilidad}</td><td>${h.evidencia}</td></tr>`).join(""))
-    .replace(/{{TECNOLOGIAS}}/g, (data.tecnologias || []).map(t => `<li>${t}</li>`).join(""))
-    .replace(/{{EXPERIENCIAS}}/g, (data.experiencias || []).map(exp => `<div class="experience-block"><strong>${exp.empresa} - ${exp.rol}</strong> (${exp.periodo})<p>${exp.detalle}</p></div>`).join(""))
-    .replace(/{{FORMACION}}/g, (data.formacion || []).map(f => `<li>${f}</li>`).join(""))
-    .replace(/{{CURSOS}}/g, (data.cursos || []).map(c => `<li>${c}</li>`).join(""));
+    .replace(/Nombre/g, data.nombre || "")
+    .replace(/Rol o Cargo/g, data.rol || "")
+    .replace(/Lorem ipsum[^<]*/g, (data.resumen || []).join(" "))
+    .replace(
+      /<span class="tech-item">[^<]*<\/span>/g,
+      (data.tecnologias || [])
+        .map(t => `<span class="tech-item">${t}</span>`)
+        .join("\n")
+    )
+    .replace(
+      /<tr style="border-bottom: 0.5px solid #ccc;">[\s\S]*?<\/tr>/g,
+      (data.habilidades || [])
+        .map(
+          h => `<tr>
+        <td style="padding: 12px 8px; border-bottom: 0.5px solid #ccc; border-right: 0.5px solid #ccc;">${h.habilidad}</td>
+        <td style="padding: 8px; border-bottom: 0.5px solid #ccc;">${h.evidencia}</td>
+      </tr>`
+        )
+        .join("\n")
+    )
+    .replace(
+      /<div class="experience-block">[\s\S]*?<\/div>/g,
+      (data.experiencias || [])
+        .map(
+          exp => `<div class="experience-block">
+        <p><strong>${exp.empresa}</strong> – ${exp.rol} <em>– ${exp.periodo}</em></p>
+        <p>${exp.detalle}</p>
+        <p><strong>Herramientas:</strong> ${(exp.herramientas || []).join(", ")}</p>
+      </div>`
+        )
+        .join("\n")
+    )
+    .replace(
+      /<ul>[\s\S]*?<\/ul>/,
+      `<ul>${(data.formacion || [])
+        .map(f => `<li><strong>${f}</strong></li>`)
+        .join("\n")}</ul>`
+    );
 }
