@@ -8,3 +8,5 @@ steps:
     args: [ 'run', 'deploy', 'cv-generator', '--image', 'gcr.io/$PROJECT_ID/cv-generator', '--region', 'us-central1', '--platform', 'managed', '--allow-unauthenticated' ]
 images:
   - 'gcr.io/$PROJECT_ID/cv-generator'
+options:
+  logging: CLOUD_LOGGING_ONLY
