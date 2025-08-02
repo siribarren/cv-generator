@@ -65,4 +65,6 @@ app.post('/approve', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`🚀 Backend iniciado en puerto ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor escuchando en puerto ${PORT}`);
+});
