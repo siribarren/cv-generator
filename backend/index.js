@@ -1,14 +1,14 @@
-import express from 'express';
-import cors from 'cors';
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { analyzeCV } from './analyzeCV.js';
-import { fillTemplate } from './fillTemplate.js';
-import { generatePDF } from './generatePDF.js';
+const express = require('express');
+const cors = require('cors');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const analyzeCV = require('./analyzeCV.js');
+const fillTemplate = require('./fillTemplate.js');
+const generatePDF = require('./generatePDF.js');
+
+const __dirname = __dirname; // En CommonJS ya existe __dirname
 const app = express();
 app.use(cors());
 app.use(express.json());
