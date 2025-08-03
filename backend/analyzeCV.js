@@ -1,10 +1,11 @@
-// Implementación de OpenAI Prompt para analizar CVs
-import OpenAI from "openai";
-import fs from "fs";
+// analyzeCV.js - CommonJS compatible
+
+const OpenAI = require("openai");
+const fs = require("fs");
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function analyzeCV(cvPath, reqText) {
+async function analyzeCV(cvPath, reqText) {
   const cvText = fs.readFileSync(cvPath, "utf-8");
 
   const prompt = `
@@ -47,3 +48,5 @@ Responde SOLO con el JSON válido.
     throw new Error("Respuesta no válida de OpenAI");
   }
 }
+
+module.exports = analyzeCV;

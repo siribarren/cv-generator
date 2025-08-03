@@ -1,6 +1,7 @@
-import fs from "fs";
+// fillTemplate.js - CommonJS compatible
+const fs = require("fs");
 
-export function fillTemplate(data) {
+function fillTemplate(data) {
   let template = fs.readFileSync("cv_sermaluc.html", "utf-8");
 
   // Reemplazos dinámicos
@@ -11,14 +12,14 @@ export function fillTemplate(data) {
     .replace(
       /<span class="tech-item">[^<]*<\/span>/g,
       (data.tecnologias || [])
-        .map(t => `<span class="tech-item">${t}</span>`)
+        .map((t) => `<span class="tech-item">${t}</span>`)
         .join("\n")
     )
     .replace(
       /<tr style="border-bottom: 0.5px solid #ccc;">[\s\S]*?<\/tr>/g,
       (data.habilidades || [])
         .map(
-          h => `<tr>
+          (h) => `<tr>
         <td style="padding: 12px 8px; border-bottom: 0.5px solid #ccc; border-right: 0.5px solid #ccc;">${h.habilidad}</td>
         <td style="padding: 8px; border-bottom: 0.5px solid #ccc;">${h.evidencia}</td>
       </tr>`
@@ -29,7 +30,7 @@ export function fillTemplate(data) {
       /<div class="experience-block">[\s\S]*?<\/div>/g,
       (data.experiencias || [])
         .map(
-          exp => `<div class="experience-block">
+          (exp) => `<div class="experience-block">
         <p><strong>${exp.empresa}</strong> – ${exp.rol} <em>– ${exp.periodo}</em></p>
         <p>${exp.detalle}</p>
         <p><strong>Herramientas:</strong> ${(exp.herramientas || []).join(", ")}</p>
@@ -40,7 +41,9 @@ export function fillTemplate(data) {
     .replace(
       /<ul>[\s\S]*?<\/ul>/,
       `<ul>${(data.formacion || [])
-        .map(f => `<li><strong>${f}</strong></li>`)
+        .map((f) => `<li><strong>${f}</strong></li>`)
         .join("\n")}</ul>`
     );
 }
+
+module.exports = fillTemplate;
