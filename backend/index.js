@@ -8,7 +8,6 @@ const analyzeCV = require('./analyzeCV.js');
 const fillTemplate = require('./fillTemplate.js');
 const generatePDF = require('./generatePDF.js');
 
-const __dirname = __dirname; // En CommonJS ya existe __dirname
 const app = express();
 app.use(cors());
 app.use(express.json());
